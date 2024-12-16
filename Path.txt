@@ -1,0 +1,53 @@
+├── api/
+│   ├── controllers/
+│   │   ├── admin.js
+│   │   ├── auth.js
+│   │   ├── engineer.js
+│   │   └── user.js
+│   ├── middleware/
+│   │   └── authorization.js
+│   ├── models/
+│   │   ├── ticketModel.js
+│   │   └── userModel.js
+│   ├── routes/
+│   │   ├── admin.js
+│   │   ├── auth.js
+│   │   ├── engineer.js
+│   │   └── user.js
+│   ├── index.js
+│   └── .env
+├── client/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Autocomplete.jsx
+│   │   │   ├── Navbar.js
+│   │   │   ├── TextModel.jsx
+│   │   │   ├── Unauthorized.jsx
+│   │   │   └── YourComponent
+│   │   ├── contexts/
+│   │   │   └── userRoleContext.jsx
+│   │   ├── layout/
+│   │   │   ├── RootLayout.jsx
+│   │   │   └── UserRootLayout.jsx
+│   │   ├── pages/
+│   │   │   ├── admin/
+│   │   │   │   └── CreateEngineer.jsx
+│   │   │   ├── user/
+│   │   │   │   ├── CreateUserTicket.jsx
+│   │   │   │   ├── UserTickets.jsx
+│   │   │   │   └── ViewTicketDetails.jsx
+│   │   ├── auth/
+│   │   │   ├── Login.jsx
+│   │   │   └── Register.jsx
+│   │   ├── landing/
+│   │   │   ├── AboutUsPage.jsx
+│   │   │   ├── ContactUsPage.jsx
+│   │   │   └── LandingPage.jsx
+│   │   ├── route/
+│   │   │   └── routes.jsx
+│   │   ├── App.jsx
+│   │   ├── index.css
+│   │   └── main.jsx
+│   └── index.html
+└── package.json

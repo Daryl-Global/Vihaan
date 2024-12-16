@@ -1,0 +1,408 @@
+[
+  {
+    "_id": "66d58a0476d93bff9478d3e7",
+    "userId": "202409023481",
+    "email": "",
+    "phone": "",
+    "name": "Kishore",
+    "password": "$2b$10$IqYie/Uj8tOQksaCzB0nRO1Su0P30izBi2t/48w4FSS9ChH/4vIYG",
+    "role": "owner",
+    "__v": 0,
+    "permissions": [
+      "all_access"
+    ],
+    "branch": "all"
+  },
+  {
+    "_id": "66d58b0076d93bff9478d3eb",
+    "userId": "202409022854",
+    "email": "",
+    "phone": "",
+    "name": "Archa",
+    "password": "$2b$10$8AR8Q9e0TkTWLEI.V1mv2.KwtYiv9uGdgebXfYBkoBgxSXZ7FIsy2",
+    "role": "owner",
+    "__v": 0,
+    "permissions": [
+      "all_access"
+    ],
+    "branch": "all"
+  },
+  {
+    "_id": "66d58b0e76d93bff9478d3ed",
+    "userId": "202409022601",
+    "email": "",
+    "phone": "",
+    "name": "Anup",
+    "password": "$2b$10$6XN2mV4a8GhKCGynRV8P3OFBOMORCT2hCYtVx0kvBFgPJN7YFYI4S",
+    "role": "upload_stock_user",
+    "__v": 0,
+    "permissions": [
+      "upload_stock"
+    ],
+    "branch": "all"
+  },
+  {
+    "_id": "66d58b2f76d93bff9478d3ef",
+    "userId": "202409027775",
+    "email": "",
+    "phone": "",
+    "name": "Swapnil",
+    "password": "$2b$10$Jleg4W6hUEaDYYpRLST0r.GVcxLlehbtwPaUPEkv68barHS.NhojG",
+    "role": "dealer",
+    "__v": 0,
+    "permissions": [
+      "upload_stock",
+      "customer_master",
+      "executive_master",
+      "booking_details",
+      "allocation_details",
+      "delivery_report"
+    ],
+    "branch": "manpada"
+  },
+  {
+    "_id": "66d58cad76d93bff9478d3f1",
+    "userId": "202409027049",
+    "email": "",
+    "phone": "",
+    "name": "Vijay",
+    "password": "$2b$10$S9RwS2bpzxPfNdLiHWbyp.DQfAiNAcRGEbCsVb2tbXlEPNuPX75cm",
+    "role": "allocation_user",
+    "__v": 0,
+    "permissions": [
+      "booking_details",
+      "allocation_details"
+    ],
+    "branch": "manpada"
+  },
+  {
+    "_id": "66d58cc976d93bff9478d3f3",
+    "userId": "202409027067",
+    "email": "",
+    "phone": "",
+    "name": "Sayali",
+    "password": "$2b$10$YPGHmULy21oMf7mL4N0joOE9BoM9RIRdfFbs/4SSjDCdXUayjP4CK",
+    "role": "sale_letter_user",
+    "__v": 0,
+    "permissions": [
+      "issue_sale_letter"
+    ],
+    "branch": "all"
+  },
+  {
+    "_id": "66d58dc376d93bff9478d3f5",
+    "userId": "202409028003",
+    "email": "",
+    "phone": "",
+    "name": "Dipali",
+    "password": "$2b$10$dj9GZjPfXxke5f12Z9jbROxnpnaUmyV51Y75w0UAuRRcNrA78vxi2",
+    "role": "passing_details_user",
+    "__v": 0,
+    "permissions": [
+      "passing_details"
+    ],
+    "branch": "all"
+  },
+  {
+    "_id": "66d58dd276d93bff9478d3f7",
+    "userId": "202409028015",
+    "email": "",
+    "phone": "",
+    "name": "Naveen",
+    "password": "$2b$10$aHggOnN3hWraS/vkD0TPKONsAuw5HMRq8KuNAWxVdYfVgC4OvjO4G",
+    "role": "registration_details_user",
+    "__v": 0,
+    "permissions": [
+      "registration_details"
+    ],
+    "branch": "all"
+  },
+  {
+    "_id": "66d58dde76d93bff9478d3f9",
+    "userId": "202409029722",
+    "email": "",
+    "phone": "",
+    "name": "Rahul",
+    "password": "$2b$10$85TBxjEJq3DgDENSD2GDqO46sagFeXCR5nW7tJ98ACozLzo7TO9He",
+    "role": "dealer",
+    "__v": 0,
+    "permissions": [
+      "executive_master",
+      "booking_details",
+      "allocation_details",
+      "delivery_report",
+      "customer_master"
+    ],
+    "branch": "ovala"
+  },
+  {
+    "_id": "67168de12aa384419bd10e0e",
+    "userId": "20241021168",
+    "email": "",
+    "phone": "",
+    "name": "Anuj",
+    "password": "$2b$10$t5LXyBoJ5LBXrSY.LskEoO9q5VmGBV92Aj8cZGehU5l7X8seVUpzu",
+    "role": "dealer",
+    "permissions": [
+      "customer_master",
+      "executive_master",
+      "booking_details",
+      "allocation_details",
+      "delivery_report"
+    ],
+    "__v": 0,
+    "branch": "shahapur"
+  },
+  {
+    "_id": "67168e032aa384419bd10e11",
+    "userId": "20241021640",
+    "email": "",
+    "phone": "",
+    "name": "Milind",
+    "password": "$2b$10$Qzn6F.lIpT2GVdW6hIG0ze3IE0CEg0HO4k0dXvp/T915zBGn3bPX2",
+    "role": "dealer",
+    "permissions": [
+      "customer_master",
+      "executive_master",
+      "booking_details",
+      "allocation_details",
+      "delivery_report"
+    ],
+    "__v": 0,
+    "branch": "diva"
+  },
+  {
+    "_id": "67168e262aa384419bd10e13",
+    "userId": "20241021990",
+    "email": "",
+    "phone": "",
+    "name": "Surindersingh",
+    "password": "$2b$10$srq1Tr9oYGhkaMO62HuIeu0/xQMlIaPmOR/3CPjTqaRwbZZsZwtPS",
+    "role": "dealer",
+    "permissions": [
+      "customer_master",
+      "executive_master",
+      "booking_details",
+      "allocation_details",
+      "delivery_report"
+    ],
+    "__v": 0,
+    "branch": "vashi"
+  },
+  {
+    "_id": "67168ec62aa384419bd10e15",
+    "userId": "202410216234",
+    "email": "",
+    "phone": "",
+    "name": "Dyneshwar",
+    "password": "$2b$10$iJrI7rjGV8tqGbL2kiKGzefsuRggeqK2Uk4Q50arDoJvMiCEPXqNS",
+    "role": "dealer",
+    "permissions": [
+      "customer_master",
+      "executive_master",
+      "booking_details",
+      "allocation_details",
+      "delivery_report"
+    ],
+    "__v": 0,
+    "branch": "airoli"
+  },
+  {
+    "_id": "67168ed62aa384419bd10e17",
+    "userId": "202410213743",
+    "email": "",
+    "phone": "",
+    "name": "Abhishek",
+    "password": "$2b$10$7fxSoRih6ZEypDKbi0U7HOHB1hUfQWexQPS1q8hkmS5V7OilGQiD2",
+    "role": "dealer",
+    "permissions": [
+      "customer_master",
+      "executive_master",
+      "booking_details",
+      "allocation_details",
+      "delivery_report"
+    ],
+    "__v": 0,
+    "branch": "ghansoli"
+  },
+  {
+    "_id": "671690162aa384419bd10e21",
+    "userId": "202410216955",
+    "email": "",
+    "phone": "",
+    "name": "Shyam",
+    "password": "$2b$10$kQt069YczVjN3RGX5a3x8us5u3WVxUjjjCxMqw9oC5W3Ejuzn2s.C",
+    "role": "dealer",
+    "permissions": [
+      "customer_master",
+      "executive_master",
+      "booking_details",
+      "allocation_details",
+      "delivery_report"
+    ],
+    "__v": 0,
+    "branch": "bigwing thane"
+  },
+  {
+    "_id": "671690422aa384419bd10e26",
+    "userId": "202410211363",
+    "email": "",
+    "phone": "",
+    "name": "Yash",
+    "password": "$2b$10$73NYNkAdCaexeU2IsOzeT.PemDwqF9cu92FWbmIp.7RNUq1H1n3U.",
+    "role": "dealer",
+    "permissions": [
+      "customer_master",
+      "executive_master",
+      "booking_details",
+      "allocation_details",
+      "delivery_report"
+    ],
+    "__v": 0,
+    "branch": "bigwing surat"
+  },
+  {
+    "_id": "67209f7fa27dec66785f7769",
+    "userId": "202410292551",
+    "email": "",
+    "phone": "",
+    "name": "Wilson",
+    "password": "$2b$10$OfMJRTiwJqYbGMFN2OYj7.pQSdLAFBXPZ0sJTVVgbplrOpRAz9.QW",
+    "role": "dealer",
+    "permissions": [
+      "customer_master",
+      "executive_master",
+      "booking_details",
+      "allocation_details",
+      "delivery_report"
+    ],
+    "__v": 0,
+    "branch": "shreenagar"
+  },
+  {
+    "_id": "6720a319a27dec66785f776e",
+    "userId": "202410294644",
+    "email": "",
+    "phone": "",
+    "name": "Swapnil M",
+    "password": "$2b$10$veb9Xhd3Yf9/RjUWS5DcGuJjnxoGaHcOx6nCZGDRh.GyxmdulSZVq",
+    "role": "dealer",
+    "permissions": [
+      "customer_master",
+      "executive_master",
+      "booking_details",
+      "allocation_details",
+      "delivery_report"
+    ],
+    "__v": 0,
+    "branch": "bigwing miraroad"
+  },
+  {
+    "_id": "6720a343a27dec66785f7773",
+    "userId": "202410291218",
+    "email": "",
+    "phone": "",
+    "name": "Aakash",
+    "password": "$2b$10$wJYjf13CEsx4iggDqI9c3ulejWKgaIaw1yzG2ogQ.SrnVhCyzfjuO",
+    "role": "dealer",
+    "permissions": [
+      "customer_master",
+      "executive_master",
+      "booking_details",
+      "allocation_details",
+      "delivery_report"
+    ],
+    "__v": 0,
+    "branch": "sanpada"
+  },
+  {
+    "_id": "6720a360a27dec66785f7778",
+    "userId": "202410296653",
+    "email": "",
+    "phone": "",
+    "name": "Ananta",
+    "password": "$2b$10$5H6OM4he06413rVdbBq37O3bHLL8PImcbJYDO3vE6s9LtLZfIXBMe",
+    "role": "dealer",
+    "permissions": [
+      "customer_master",
+      "executive_master",
+      "booking_details",
+      "allocation_details",
+      "delivery_report"
+    ],
+    "__v": 0,
+    "branch": "vasind"
+  },
+  {
+    "_id": "6720a381a27dec66785f777d",
+    "userId": "202410291770",
+    "email": "",
+    "phone": "",
+    "name": "Deepali",
+    "password": "$2b$10$Tg2JW7hpcsFW8gLyxHvBv.AGvIM6a2QGWAS7krx0JfLNLKQiepWEi",
+    "role": "dealer",
+    "permissions": [
+      "customer_master",
+      "executive_master",
+      "booking_details",
+      "allocation_details",
+      "delivery_report"
+    ],
+    "__v": 0,
+    "branch": "airoli ec"
+  },
+  {
+    "_id": "6720a3a7a27dec66785f7782",
+    "userId": "202410297078",
+    "email": "",
+    "phone": "",
+    "name": "Neeta",
+    "password": "$2b$10$lfgW472tZW7LDL.lDYpvSeYqWv0F.h4BL5J/hE0VsFNaytVlOjyne",
+    "role": "dealer",
+    "permissions": [
+      "customer_master",
+      "executive_master",
+      "booking_details",
+      "allocation_details",
+      "delivery_report"
+    ],
+    "__v": 0,
+    "branch": "padgha"
+  },
+  {
+    "_id": "6720a3c4a27dec66785f7787",
+    "userId": "202410293300",
+    "email": "",
+    "phone": "",
+    "name": "Prakash",
+    "password": "$2b$10$IA/Qzo3F4JfVAzovMrD0KOgFHQHT7eKdLLu0pLJ45bOYgWcJko7Z6",
+    "role": "dealer",
+    "permissions": [
+      "customer_master",
+      "executive_master",
+      "booking_details",
+      "allocation_details",
+      "delivery_report"
+    ],
+    "__v": 0,
+    "branch": "turbhe"
+  },
+  {
+    "_id": "6720a3e2a27dec66785f778c",
+    "userId": "202410292579",
+    "email": "",
+    "phone": "",
+    "name": "Santosh",
+    "password": "$2b$10$2OSYuhZr3sxhUK9en3RaQea/GRP7LDLyGpN916XyVGa6jpbXkvAp.",
+    "role": "dealer",
+    "permissions": [
+      "customer_master",
+      "executive_master",
+      "booking_details",
+      "allocation_details",
+      "delivery_report"
+    ],
+    "__v": 0,
+    "branch": "lokmanyanagar"
+  }
+]

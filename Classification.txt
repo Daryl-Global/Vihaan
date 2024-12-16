@@ -1,0 +1,40 @@
+
+      classification: classification || "",
+	  
+	  
+    setClassification("");
+	
+	
+	<div className="flex flex-col sm:flex-row items-center">
+                <label className="w-full sm:w-1/3 ">Classification:</label>
+                <select
+                  className="w-full sm:w-2/3 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={classification}
+                  onChange={(e) => {
+                    setClassification(e.target.value);
+                    setShowClassificationInput(e.target.value === "Others");
+                  }}
+                >
+                  <option value="" disabled>
+                    Select a classification
+                  </option>
+                  <option value="Question">Question</option>
+                  <option value="Problem">Problem</option>
+                  <option value="Feature">Feature</option>
+                  <option value="Others">Others</option>
+                </select>
+              </div>
+              {showClassificationInput && (
+                <div className="flex flex-col sm:flex-row items-center">
+                  <label className="w-full sm:w-1/3 text-emerald-600">
+                    Type other classification:
+                  </label>
+                  <input
+                    className="w-full sm:w-2/3 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value={classification}
+                    onChange={(e) => {
+                      setClassification(e.target.value);
+                    }}
+                  />
+                </div>
+              )}

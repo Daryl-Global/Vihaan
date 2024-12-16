@@ -1,0 +1,144 @@
+[{
+  "_id": {
+    "$oid": "656af96cae824eed0c600c14"
+  },
+  "userId": "202312026303",
+  "email": "system@gmail.com",
+  "phone": "9182736455",
+  "name": "System.",
+  "password": "$2b$10$QfOe5OpC8eYvUGK7hncAauEZfII87Kid4yt91C4m1G9E.Zuod931W",
+  "role": "user",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65647089e2d53a11e85d06e3"
+  },
+  "userId": "202311273592",
+  "email": "admin@globalin.co.uk",
+  "phone": "0000000000",
+  "name": "Admin.",
+  "password": "$2b$10$PTUg4fsEcs3ODbGZZJWaT.ZZ1K3/JvH7cRyvXTuqb179iaqxPREzW",
+  "role": "admin",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "656753901844ec1cf7555d61"
+  },
+  "userId": "202311299805",
+  "email": "engineer@globalin.co.uk",
+  "phone": "9182736454",
+  "name": "Engineer.",
+  "password": "$2b$10$eSjsM8IWVggM6Ml/pkXQveaIiIt2/qC56HPS5MYO26Wf06RsRbqqe",
+  "role": "engineer",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "656ace296bdb1db2cc9d686d"
+  },
+  "userId": "202312021788",
+  "email": "nivrutti@globalin.co.uk",
+  "phone": "7039550735",
+  "name": "Nivrutti Kanade",
+  "password": "$2b$10$LRQ8PhZfgk9aPNYlugQYsep.jzyKtJ0z4GSRW20z1vVp0jMzebZRu",
+  "role": "engineer",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65699ab76f6f8b1898269ba7"
+  },
+  "userId": "202312016516",
+  "email": "none@gmail.com",
+  "phone": "9182736459",
+  "name": "None.",
+  "password": "$2b$10$0NvrthG8.BDq3wsznG1IAu305IaZYzqSjc0ZKRwyeXin4REaDT74m",
+  "role": "admin",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "656d71e5c735dcec9ed3ddd9"
+  },
+  "userId": "202312041438",
+  "email": "amar@globalin.co.uk",
+  "phone": "7039550229",
+  "name": "Amar Gole",
+  "password": "$2b$10$CRHQ3Kjll.gIcvo9JUiwG.xyXzquFutJ4/Egp0bq7PubEu0ijYahW",
+  "role": "engineer",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "656d81e5cceab77c812e3d8a"
+  },
+  "userId": "202312044549",
+  "email": "Pranit@globalin.co.uk",
+  "phone": "9326896119",
+  "name": "Pranit Dhawade",
+  "password": "$2b$10$/kuqO5nbPgzNQi.pwo3zZeAb.MZbt5Sx6erzBrvN39XvqwGlKRx0a",
+  "role": "user",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "656db53e8b21206dbd49b0d0"
+  },
+  "userId": "202312044518",
+  "email": "pranit@globalin.co.uk",
+  "phone": "9326896118",
+  "name": "Pranit",
+  "password": "$2b$10$PrGzVEk6fVCeljl5IzUsye4AOH/XaSiIHlGt3Iom7YaXKSsvzNLKG",
+  "role": "engineer",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6571a0f8b7d88a45191d9b4f"
+  },
+  "userId": "202312072830",
+  "email": "daryal@globalin.co.uk",
+  "phone": "8080304502",
+  "name": "Daryal",
+  "password": "$2b$10$VSnKCh28FhYKKEQYaaVBoe3WbF/CLSf1QIhoOl4JTrwUqHVS198qG",
+  "role": "engineer",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "657a9f7dbd0e31a6d26905e1"
+  },
+  "userId": "202312145707",
+  "email": "chintan@globalin.co.uk",
+  "phone": "7039550769",
+  "name": "Chintan",
+  "password": "$2b$10$BUGNR7iB76YPqBzppMH/T.YKoBR5bj6Q3405x/2ROu7vPIp4zS/8y",
+  "role": "engineer",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "657fcbde380f2d6ef913cbc0"
+  },
+  "userId": "202312183449",
+  "email": "koka@gmail.com",
+  "phone": "9182736444",
+  "name": "Koka",
+  "password": "$2b$10$xik2P/6x1vx6cd.w4lixB.u8mL/3CGcMFCntXJGXcQKp5SorQjIKC",
+  "role": "user",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6593e39295939faa136447d3"
+  },
+  "userId": "202401024512",
+  "email": "none1@gmail.com",
+  "phone": "9182736444",
+  "name": "None1.",
+  "password": "$2b$10$PJno7DGSy8jTQSY4Zq4Tc.xVjVyBE/cZgO3bb9GaGLY8bCAagiaYe",
+  "role": "user",
+  "__v": 0
+}]

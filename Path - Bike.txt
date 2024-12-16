@@ -1,0 +1,49 @@
+/bike-rental-system
+  /api
+    /controllers
+		bikeController.js
+		bookingController.js
+		locationController.js
+		userController.js
+    /models
+		Bike.js
+		Booking.js
+		Location.js
+		User.js
+    /routes
+		index.js
+		locationRoutes.js
+		userRoutes.js
+	/public
+		app.js
+		index.html
+    index.js
+	.env
+	
+	
+	
+  /client
+    /public
+    /src
+      /components
+		AdminDashboard.js
+		ManageLocation.js
+		Navbar.js
+		UserDashboard.js
+      /pages
+        /Admin
+			AdminDashboard.js
+			Signup.js
+        /User
+			Bookbike.js
+			UserDashboard.js
+		AdminDashboard.js
+		Login.js
+		ManageLocation.js
+		Signup.js
+		UserDashboard.js
+      App.js
+      index.js
+	  index.html
+
+  package.json
