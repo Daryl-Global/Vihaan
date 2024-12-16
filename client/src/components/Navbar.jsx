@@ -16,7 +16,7 @@ const Navbar = () => {
     const mastersDropdownRef = useRef(null);
     const [sessionTimeLeft, setSessionTimeLeft] = useState(null);
 
-    const privilegedUser = ['admin', 'owner', 'dealer'].includes(user.role);
+    const privilegedUser = ['admin', 'owner', 'dealer', 'upload_stock_user'].includes(user.role);
 
     const pagePermissions = {
         addItems: ['upload_stock'],
@@ -312,13 +312,13 @@ const Navbar = () => {
                                 Inventory
                             </span>
                         </Link>
-                        {/* {user.role !== "2069-t2-prlo-456-fiok" && (
+                        {user.role !== "2069-t2-prlo-456-fiok" && (
                             <button onClick={getTicketExport}>
                                 <span className={getLinkClassName("#export_tickets")}>
                                     Export All Tickets
                                 </span>
                             </button>
-                        )} */}
+                        )}
 
                         {user.name && (
                             <div className="relative" ref={userDropdownRef}>
