@@ -6,7 +6,7 @@
 │   │   └── user.js
 │   ├── middleware/
 │   │   └── authorization.jsqq
-│   ├── models/
+│   ├── models/qq
 │   │   ├── ticketModel.js
 │   │   └── userModel.js
 │   ├── routes/
