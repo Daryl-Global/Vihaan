@@ -160,6 +160,66 @@ const exportTickets = async (req, res) => {
     }
 };
 
+
+const exportstatusTickets = async (req, res) => {
+    try {
+        const { user_id } = req.params;
+
+        if (user_id !== req.userId) {
+            return res.sendStatus(403);
+        }
+
+        // Fetch all tickets
+        const tickets = await Ticket.find().lean();
+
+        if (!tickets.length) {
+            return res.status(404).json({ error: "No tickets found" });
+        }
+
+        // Separate tickets based on status
+        const openTickets = tickets
+            .filter(ticket => ticket.status === "open")
+            .map(ticket => ({
+                Model: ticket.model,
+                Colour: ticket.colour,
+                ChassisNo: ticket.chassisNo,
+                EngineNo: ticket.engineNo,
+            }));
+
+        const allocatedTickets = tickets
+            .filter(ticket => ticket.status === "allocated")
+            .map(ticket => ({
+                Model: ticket.model,
+                Colour: ticket.colour,
+                ChassisNo: ticket.chassisNo,
+                EngineNo: ticket.engineNo,
+            }));
+
+        // Create a workbook
+        const workbook = XLSX.utils.book_new();
+
+        // Sheet 1: Open Stock
+        const openSheet = XLSX.utils.json_to_sheet(openTickets);
+        XLSX.utils.book_append_sheet(workbook, openSheet, "Open Stock");
+
+        // Sheet 2: Allocated
+        const allocatedSheet = XLSX.utils.json_to_sheet(allocatedTickets);
+        XLSX.utils.book_append_sheet(workbook, allocatedSheet, "Allocated");
+
+        // Convert to buffer
+        const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "buffer" });
+
+        // Set response headers and send file
+        res.setHeader("Content-Disposition", 'attachment; filename="Tickets_Status.xlsx"');
+        res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+        return res.status(200).send(excelBuffer);
+    } catch (error) {
+        console.error("Error exporting tickets:", error.message);
+        return res.status(500).json({ error: "Failed to export tickets: " + error.message });
+    }
+};
+
 const fetchDealers = async (req, res) => {
     try {
         const { user_id } = req.params;
@@ -355,6 +415,7 @@ module.exports = {
     fetchTickets,
     exportTickets,
     exportMyTickets,
+    exportstatusTickets,
     fetchDealers,
     assignRole,
     setDealer,
