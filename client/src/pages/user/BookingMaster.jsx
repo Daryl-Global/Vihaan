@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import * as XLSX from 'xlsx';
@@ -43,6 +43,11 @@ const BookingMaster = () => {
         colours: {}
     });
 
+    // States for modal control and date selection
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+
     const fetchData = async () => {
         try {
             const [customersResponse, executivesResponse, bookingsResponse, vehiclesResponse] = await Promise.all([
@@ -63,12 +68,23 @@ const BookingMaster = () => {
     };
 
     const handleExportBookingMaster = () => {
-        if (!bookings.length) {
-            toast.error("No booking data available to export.");
+        // Filter bookings by date range
+        const filteredBookings = bookings.filter((booking) => {
+            const createdOnDate = new Date(booking.createdOn);
+            const start = startDate ? new Date(startDate) : null;
+            const end = endDate ? new Date(endDate) : null;
+
+            if (start && createdOnDate < start) return false;
+            if (end && createdOnDate > end) return false;
+            return true;
+        });
+
+        if (!filteredBookings.length) {
+            toast.error("No booking data available for the selected date range.");
             return;
         }
 
-        const exportData = bookings.map((booking) => ({
+        const exportData = filteredBookings.map((booking) => ({
             CusName: booking.cusName || "",
             Addhar: booking.addhar || "",
             AddCus: booking.addCus || "",
@@ -99,14 +115,10 @@ const BookingMaster = () => {
     useEffect(() => {
         setUniqueVehicleValues(vehicles.reduce((acc, vehicle) => {
             acc.models.add(vehicle.model);
-            
-            // Ensure variants are stored in a map against the model
             if (!acc.variants[vehicle.model]) {
                 acc.variants[vehicle.model] = new Set();
             }
             acc.variants[vehicle.model].add(vehicle.variant);
-            
-            // Ensure colours are stored in a map against the model and variant
             if (!acc.colours[vehicle.model]) {
                 acc.colours[vehicle.model] = {};
             }
@@ -114,10 +126,9 @@ const BookingMaster = () => {
                 acc.colours[vehicle.model][vehicle.variant] = new Set();
             }
             acc.colours[vehicle.model][vehicle.variant].add(vehicle.colour);
-            
             return acc;
         }, { models: new Set(), variants: {}, colours: {} }));
-        
+
         console.log('vehicle data unique values: ', uniqueVehicleValues);
     }, [vehicles]);
 
@@ -329,14 +340,28 @@ const BookingMaster = () => {
         setUpdateTicket(true);
     };
 
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleDownloadClick = () => {
+        handleExportBookingMaster();
+        closeModal();
+    };
+
     return (
         <>
             {user.permissions.includes("booking_details") || user.permissions.includes("all_access") ? (
                 <div className="flex flex-col items-center pt-10 lg:pt-20 min-h-screen">
                     <div className="w-full max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-lg">
-                        <div className="flex justify-end mb-6">
-                        <button
-                                onClick={handleExportBookingMaster}
+                        <div className="flex justify-end mb-6 space-x-4">
+
+                            <button
+                                onClick={openModal}
                                 className="
                                     px-6 
                                     py-2 
@@ -354,7 +379,6 @@ const BookingMaster = () => {
                             >
                                 Export Booking Master
                             </button>
-                            
                             
                             <button
                                 onClick={handleAllocationClick}
@@ -418,9 +442,9 @@ const BookingMaster = () => {
                                             className="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                                         >
                                             <option value="">Select Vehicle Model</option>
-                                            {Array.from(uniqueVehicleValues.models).map((model) => (
-                                                <option key={model} value={model}>
-                                                    {model}
+                                            {Array.from(uniqueVehicleValues.models).map((m) => (
+                                                <option key={m} value={m}>
+                                                    {m}
                                                 </option>
                                             ))}
                                         </select>
@@ -431,9 +455,9 @@ const BookingMaster = () => {
                                             className="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                                         >
                                             <option value="">Select Vehicle Variant</option>
-                                            {model && Array.from(uniqueVehicleValues.variants[model] || []).map((variant) => (
-                                                <option key={variant} value={variant}>
-                                                    {variant}
+                                            {model && Array.from(uniqueVehicleValues.variants[model] || []).map((v) => (
+                                                <option key={v} value={v}>
+                                                    {v}
                                                 </option>
                                             ))}
                                         </select>
@@ -444,16 +468,11 @@ const BookingMaster = () => {
                                             className="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                                         >
                                             <option value="">Select Vehicle Colour</option>
-                                            {/* {colourOptions.map((colour, index) => (
-                                                <option key={index} value={colour}>
-                                                    {colour}
-                                                </option>
-                                            ))} */}
                                             {model && variant ? (
                                                 Array.from(uniqueVehicleValues.colours[model]?.[variant] || []).length > 0 ? (
-                                                    Array.from(uniqueVehicleValues.colours[model][variant]).map((colour) => (
-                                                        <option key={colour} value={colour}>
-                                                            {colour}
+                                                    Array.from(uniqueVehicleValues.colours[model][variant]).map((c) => (
+                                                        <option key={c} value={c}>
+                                                            {c}
                                                         </option>
                                                     ))
                                                 ) : (
@@ -475,16 +494,16 @@ const BookingMaster = () => {
                                         >
                                             <option value="">Select HP</option>
                                             <option value="Bajaj Finance Limited">Bajaj Finance Limited</option>
-					    <option value="Capital First Ltd">Capital First Ltd</option>
-					    <option value="Family Credit Bank (L&T)">Family Credit Bank (L&T)</option>
-					    <option value="Kotak Prime Bank">Kotak Prime Bank</option>
-					    <option value="HDFC">HDFC</option>
-					    <option value="ICICI">ICICI</option>
+                                            <option value="Capital First Ltd">Capital First Ltd</option>
+                                            <option value="Family Credit Bank (L&T)">Family Credit Bank (L&T)</option>
+                                            <option value="Kotak Prime Bank">Kotak Prime Bank</option>
+                                            <option value="HDFC">HDFC</option>
+                                            <option value="ICICI">ICICI</option>
                                             <option value="Tata Capital Financial Services Ltd">Tata Capital Financial Services Ltd</option>
                                             <option value="Aditya Birla Finance Ltd">Aditya Birla Finance Lt.</option>
                                             <option value="Mahindra & Mahindra Financial Services Limited">Mahindra & Mahindra Financial Services Limited</option>
                                             <option value="Cash">Cash</option>
-					    <option value="Other">Other</option>
+                                            <option value="Other">Other</option>
                                         </select>
                                         <input
                                             required
@@ -504,9 +523,9 @@ const BookingMaster = () => {
                                             className="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                                         >
                                             <option value="">Select a Executive</option>
-                                            {executives.map((executive) => (
-                                                <option key={executive.id} value={executive.executiveName}>
-                                                    {executive.executiveName}
+                                            {executives.map((ex) => (
+                                                <option key={ex.id} value={ex.executiveName}>
+                                                    {ex.executiveName}
                                                 </option>
                                             ))}
                                         </select>
@@ -585,7 +604,7 @@ const BookingMaster = () => {
                                                 <th className="py-2 px-4 border-b">Booking Amount</th>
                                                 <th className="py-2 px-4 border-b">Executive</th>
                                                 {user.permissions.includes("all_access") && (
-                                                <th className="py-2 px-4 border-b text-left">Branch</th>
+                                                    <th className="py-2 px-4 border-b text-left">Branch</th>
                                                 )}
                                             </tr>
                                         </thead>
@@ -601,7 +620,7 @@ const BookingMaster = () => {
                                                     <td className="py-2 px-4 border-b">{booking.bookingAmount}</td>
                                                     <td className="py-2 px-4 border-b">{booking.executive}</td>
                                                     {user.permissions.includes("all_access") && (
-                                                    <td className="py-2 px-4 border-b text-left">{booking.branch}</td>
+                                                        <td className="py-2 px-4 border-b text-left">{booking.branch}</td>
                                                     )}
                                                 </tr>
                                             ))}
@@ -615,7 +634,6 @@ const BookingMaster = () => {
             ) : (
                 <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 overflow-hidden">
                     <div className="relative bg-white p-10 rounded-3xl shadow-2xl max-w-lg text-center transform transition-transform hover:scale-105 duration-500">
-                        
                         <div className="absolute -top-16 left-1/2 transform -translate-x-1/2">
                             <img
                                 src={stopImage}  
@@ -623,7 +641,6 @@ const BookingMaster = () => {
                                 className="h-24 w-24 object-contain animate-bounce"
                             />
                         </div>
-
                             <h2 className="text-4xl font-extrabold text-red-500 mb-4">
                                 Stop Right There!
                             </h2>
@@ -642,6 +659,49 @@ const BookingMaster = () => {
 
             {updateTicket && currentTicket && (
                 <CreateUpdateTicket setUpdateTicket={setUpdateTicket} ticket={currentTicket} />
+            )}
+
+            {/* Modal for date selection */}
+            {isModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded shadow-lg">
+                        <h2 className="text-xl font-bold mb-4">Select Date Range for Export</h2>
+                        <div className="flex flex-col space-y-4">
+                            <div className="flex flex-col">
+                                <label className="font-semibold mb-1">From Date:</label>
+                                <input 
+                                    type="date"
+                                    value={startDate}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                    className="border border-gray-300 px-2 py-1 rounded"
+                                />
+                            </div>
+                            <div className="flex flex-col">
+                                <label className="font-semibold mb-1">To Date:</label>
+                                <input 
+                                    type="date"
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                    className="border border-gray-300 px-2 py-1 rounded"
+                                />
+                            </div>
+                            <div className="flex justify-end space-x-2 mt-4">
+                                <button
+                                    onClick={closeModal}
+                                    className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleDownloadClick}
+                                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                                >
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             )}
         </>
     );
