@@ -14,7 +14,7 @@ export const AtAGlance = () => {
     const [selectedVariant, setSelectedVariant] = useState(null);
     const navigate = useNavigate();
 
-    const privilegedUser = ['admin', 'owner', 'dealer'].includes(user.role);
+    const privilegedUser = ['admin', 'owner', 'dealer', 'upload_stock_user'].includes(user.role);
 
     useEffect(() => {
         if (!user) navigate("/login");

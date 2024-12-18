@@ -15,6 +15,7 @@ const {
     getBookings,
     getVehicles,
   exportMyTickets,
+  exportstatusTickets,
 } = require("../controllers/admin.js");
 const { authenticateToken } = require("../middleware/authorization");
 
@@ -23,6 +24,7 @@ const router = express.Router();
 router.get("/:user_id/tickets", authenticateToken, fetchTickets);
 router.get("/:user_id/export_tickets", authenticateToken, exportTickets);
 router.get("/:user_id/export_my_tickets", authenticateToken, exportMyTickets);
+router.get("/:user_id/export_per_tickets", authenticateToken, exportstatusTickets);
 router.get("/:user_id/dealers", authenticateToken, fetchDealers);
 router.put("/:user_id/create_dealer", authenticateToken, assignRole);
 router.get('/:user_id/bookings', getBookings);

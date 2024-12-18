@@ -16,6 +16,9 @@ export const UserTickets = () => {
     const [availableVariants, setAvailableVariants] = useState([]);
     const [locations, setLocations] = useState([]);
     const [stockStatuses, setStockStatuses] = useState([]);
+    const [availableCustomerNames, setAvailableCustomerNames] = useState([]);
+    const [filteredCustomerName, setFilteredCustomerName] = useState("all");
+
     const [sessionTimeLeft, setSessionTimeLeft] = useState(null);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const navigate = useNavigate();
@@ -103,13 +106,15 @@ export const UserTickets = () => {
                         acc.variants.add(ticket.variant);
                         acc.locations.add(ticket.location);
                         acc.statuses.add(ticket.status);
+                        acc.customers.add(ticket.nameCus);
                         return acc;
-                    }, { models: new Set(), variants: new Set(), locations: new Set(), statuses: new Set() });
+                    }, { models: new Set(), variants: new Set(), locations: new Set(), statuses: new Set(), customers: new Set() });
                     
                     setAvailableModels(Array.from(uniqueValues.models));
                     setAvailableVariants(Array.from(uniqueValues.variants));
                     setLocations(Array.from(uniqueValues.locations));
                     setStockStatuses(Array.from(uniqueValues.statuses));
+                    setAvailableCustomerNames(Array.from(uniqueValues.customers));
                 } else if (data.status === 403) {
                     navigate("/unauthorized");
                 } else {
@@ -148,7 +153,8 @@ export const UserTickets = () => {
         .filter((ticket) => (filteredVariant === "all" || ticket.variant === filteredVariant))
         .filter((ticket) => ticket.chassisNo.toLowerCase().includes(chassisFilter.toLowerCase()))
         .filter((ticket) => ticket.engineNo.toLowerCase().includes(engineFilter.toLowerCase()))
-        .filter((ticket) => (filteredStatus === "all" || ticket.status === filteredStatus));
+        .filter((ticket) => (filteredStatus === "all" || ticket.status === filteredStatus))
+        .filter((ticket) => (filteredCustomerName === "all" || ticket.nameCus === filteredCustomerName));
         
 
     const pascalToTitleCase = (str) => {
@@ -300,6 +306,21 @@ export const UserTickets = () => {
                                         </th>
                                     )}
                                     <th className="py-2 px-4">
+                                        <h3 className="text-lg font-bold">Customer Name</h3>
+                                        <select
+                                            className="w-full p-1 mt-1 text-teal-800 text-center rounded"
+                                            value={filteredCustomerName}
+                                            onChange={(e) => setFilteredCustomerName(e.target.value)}
+                                        >
+                                            <option value="all">All Customers</option>
+                                            {availableCustomerNames.map((customer) => (
+                                                <option key={customer} value={customer}>
+                                                    {customer}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </th>
+                                    <th className="py-2 px-4">
                                         <h3 className="text-lg font-bold">Stock Inward Date</h3>
                                     </th>
                                 </tr>
@@ -324,6 +345,7 @@ export const UserTickets = () => {
                                                 {pascalToTitleCase(ticket.status)}
                                             </td>
                                         )}
+                                        <td className="py-2 px-4 text-center">{ticket.nameCus}</td>
                                         <td className="py-2 px-4 text-center">
                                             {new Date(ticket.createdAt).toLocaleDateString() +
                                                 ' ' +

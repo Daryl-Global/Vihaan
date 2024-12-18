@@ -114,93 +114,105 @@ const CreateUserTicket = () => {
     };
 
     const bulkUpdateVehicleMaster = async (ticketJson) => {
-        
-        const vehiclesToAdd = [];
-
-            for (const item of ticketJson) {
-                const vehicleExists = vehicles.some(
-                    (vehicle) => 
-                        vehicle.model === item.model && 
-                        vehicle.colour === item.colour && 
-                        vehicle.variant === item.variant
-                );
-                
-                if (!vehicleExists) {
-                    vehiclesToAdd.push({
-                        model: item.model,
-                        colour: item.colour,
-                        variant: item.variant
-                    });
-                }
-            }
-
-            if (vehiclesToAdd.length > 0) {
-                try {
-                    const response = await axios.post(`${baseURL}/vehiclemaster/bulk`, { userId: user.id, vehicles: vehiclesToAdd }, {
+        const vehiclesToAdd = ticketJson.filter((item) => {
+            return !vehicles.some(
+                (vehicle) =>
+                    vehicle.model === item.model &&
+                    vehicle.colour === item.colour &&
+                    vehicle.variant === item.variant
+            );
+        });
+    
+        if (vehiclesToAdd.length > 0) {
+            try {
+                const response = await axios.post(
+                    `${baseURL}/vehiclemaster/bulk`,
+                    { userId: user.id, vehicles: vehiclesToAdd },
+                    {
                         headers: { 'Content-Type': 'application/json' },
-                    });
-                    console.log(`Successfully added ${response.data.vehiclesAdded} vehicles to Vehicle Master`);
-                    console.log(`Did not add ${response.data.vehiclesNotAdded} vehicles as they already exist in Vehicle Master`);
-                    const successMessage = response.data.vehiclesAdded > 0 ? `${response.data.vehiclesAdded} vehicles added successfully to Vehicle Master.` : '';
-                    const failureMessage = response.data.vehiclesNotAdded > 0 ? `${response.data.vehiclesNotAdded} vehicles not added as they were already present in Vehicle Master.` : '';
-                    toast.success(`${successMessage} ${failureMessage}`);
-
-                } catch (error) {
-                    console.error("Failed to save vehicles:", error.response?.data || error.message);
-                }
+                    }
+                );
+                console.log(`Successfully added ${response.data.vehiclesAdded} vehicles to Vehicle Master`);
+                console.log(`Did not add ${response.data.vehiclesNotAdded} vehicles as they already exist in Vehicle Master`);
+    
+                const successMessage =
+                    response.data.vehiclesAdded > 0
+                        ? `${response.data.vehiclesAdded} vehicles added successfully to Vehicle Master.`
+                        : '';
+                const failureMessage =
+                    response.data.vehiclesNotAdded > 0
+                        ? `${response.data.vehiclesNotAdded} vehicles not added as they were already present in Vehicle Master.`
+                        : '';
+                toast.success(`${successMessage} ${failureMessage}`);
+            } catch (error) {
+                console.error('Failed to save vehicles:', error.response?.data || error.message);
             }
-    }
+        }
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
+    
         if (inputType === 'bulk') {
             const jsonData = await handleFileUpload();
             if (!jsonData) return;
-
-            bulkUpdateVehicleMaster(jsonData);
-            
+    
+            // Update vehicle master only for new vehicles
+            await bulkUpdateVehicleMaster(jsonData);
+    
+            // Upload all vehicles to tickets
             try {
                 const response = await axios.post(`${baseURL}/bulkcreateticket`, jsonData, {
                     headers: { 'Content-Type': 'application/json' },
                 });
-
+    
                 if (response.status === 200) {
-                    
-                    toast.success('Bulk tickets have been created successfully.'    );
+                    const totalTicketsAdded = jsonData.length;
+                    toast.success(`Bulk Vehicles have been created successfully. Total Vehicles added: ${totalTicketsAdded}`);
                     navigate(`/user/${user.id}/tickets`);
                 } else {
                     toast.error('An error occurred during bulk ticket creation.');
                 }
             } catch (error) {
-                console.error('Error creating bulk tickets:', error.message);
+                console.error('Error creating bulk Vehicles:', error.message);
                 toast.error('An error occurred while uploading the file: ' + error.message);
             }
         } else {
-            const newComplaint = { variant, colour, model, chassisNo, engineNo, location, assignedDealer: dealerId, status: 'open', isApproved: false };
-
+            const newComplaint = {
+                variant,
+                colour,
+                model,
+                chassisNo,
+                engineNo,
+                location,
+                assignedDealer: dealerId,
+                status: 'open',
+                isApproved: false,
+            };
+    
             try {
+                // Check if the vehicle exists in the vehicle master
                 const vehicleExists = vehicles.some(
-                    (vehicle) => 
-                        vehicle.model === model && 
-                        vehicle.colour === colour && 
+                    (vehicle) =>
+                        vehicle.model === model &&
+                        vehicle.colour === colour &&
                         vehicle.variant === variant
                 );
-
+    
                 if (!vehicleExists) {
+                    // Add vehicle to the vehicle master if it doesn't exist
                     const vehicleData = { userId: user.id, model, colour, variant };
                     await axios.post(`${baseURL}/vehiclemaster`, vehicleData, {
                         headers: { 'Content-Type': 'application/json' },
                     });
                     toast.success('Vehicle added to Vehicle Master');
-                } else {
-                    toast.success('Vehicle not added as it was already present in Vehicle Master');
                 }
-
+    
+                // Add the ticket regardless of the vehicle's existence in the vehicle master
                 const response = await axios.post(`${baseURL}/createticket`, newComplaint, {
-                    headers: { 'Content-Type': 'application/json' }
+                    headers: { 'Content-Type': 'application/json' },
                 });
-
+    
                 if (response.status === 200) {
                     toast.success('Your ticket has been successfully created.');
                     navigate(`/user/${user.id}/tickets`);

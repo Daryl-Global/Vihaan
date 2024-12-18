@@ -12,11 +12,14 @@ const Navbar = () => {
     const location = useLocation();
     const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
     const [isMastersDropdownOpen, setIsMastersDropdownOpen] = useState(false);
+    const [isExportDropdownOpen, setIsExportDropdownOpen] = useState(false);
     const userDropdownRef = useRef(null);
     const mastersDropdownRef = useRef(null);
+    const exportDropdownRef = useRef(null);
+
     const [sessionTimeLeft, setSessionTimeLeft] = useState(null);
 
-    const privilegedUser = ['admin', 'owner', 'dealer'].includes(user.role);
+    const privilegedUser = ['admin', 'owner', 'dealer', 'upload_stock_user'].includes(user.role);
 
     const pagePermissions = {
         addItems: ['upload_stock'],
@@ -53,6 +56,29 @@ const Navbar = () => {
             console.error('Error downloading the tickets:', error);
         }
     };
+
+
+    const getTicketperExport = async () => {
+        try {
+            const res = await axios.get(`/api/admin/${user.id}/export_per_tickets`, {
+                responseType: "arraybuffer",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = `Status.xlsx`;
+            link.click();
+        } catch (error) {
+            console.error('Error downloading the tickets:', error);
+        }
+    };
+
+
+
 
     const startSessionCountdown = () => {
         const sessionStartTime = localStorage.getItem('sessionStartTime');
@@ -112,6 +138,9 @@ const Navbar = () => {
             }
             if (mastersDropdownRef.current && !mastersDropdownRef.current.contains(event.target)) {
                 setIsMastersDropdownOpen(false);
+            }
+            if (exportDropdownRef.current && !exportDropdownRef.current.contains(event.target)) {
+                setIsExportDropdownOpen(false);
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
@@ -312,13 +341,42 @@ const Navbar = () => {
                                 Inventory
                             </span>
                         </Link>
-                        {/* {user.role !== "2069-t2-prlo-456-fiok" && (
-                            <button onClick={getTicketExport}>
-                                <span className={getLinkClassName("#export_tickets")}>
-                                    Export All Tickets
-                                </span>
+                        {user.role !== "2069-t2-prlo-456-fiok" && (
+                            
+                            <div className="relative" ref={exportDropdownRef}>
+                            <button
+                                onClick={() => {
+                                    setIsExportDropdownOpen(!isExportDropdownOpen);
+                                    setIsMastersDropdownOpen(false);
+                                }}
+                                className="mr-5 text-white font-bold flex items-center cursor-pointer hover:text-gray-300"
+                            >
+                                Export
+                                <svg className={`w-4 h-4 ml-2 transition-transform ${isExportDropdownOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24">
+                                    <path d="M19 9l-7 7-7-7"></path>
+                                </svg>
                             </button>
-                        )} */}
+                            {isExportDropdownOpen && (
+                                <div className="absolute bg-white text-gray-900 shadow-md rounded-md mt-1 z-20">
+                                {hasAccess.customerMaster && (
+                                    <button
+                                        onClick={getTicketExport}
+                                        className="block px-4 py-2 hover:bg-gray-200 cursor-pointer w-full text-left border-t border-gray-300"
+                                    >
+                                        Export All Tickets
+                                    </button>
+                                )}
+                                    
+                                    <button
+                                        onClick={getTicketperExport}
+                                        className="block px-4 py-2 hover:bg-gray-200 cursor-pointer w-full text-left border-t border-gray-300"
+                                    >
+                                        Export Status
+                                    </button>
+                                    </div>
+                            )}
+                        </div>
+                        )}
 
                         {user.name && (
                             <div className="relative" ref={userDropdownRef}>
