@@ -62,6 +62,36 @@ const BookingMaster = () => {
         }
     };
 
+    const handleExportBookingMaster = () => {
+        if (!bookings.length) {
+            toast.error("No booking data available to export.");
+            return;
+        }
+
+        const exportData = bookings.map((booking) => ({
+            CusName: booking.cusName || "",
+            Addhar: booking.addhar || "",
+            AddCus: booking.addCus || "",
+            EmailId: booking.emailId || "",
+            MobileNumber: booking.mobileNumber || "",
+            Model: booking.model || "",
+            Variant: booking.variant || "",
+            Colour: booking.colour || "",
+            HP: booking.hp || "",
+            BookingAmount: booking.bookingAmount || "",
+            BookingAmountPlaceholder: booking.bookingAmountPlaceholder || "",
+            Executive: booking.executive || "",
+            CreatedOn: booking.createdOn || "",
+        }));
+
+        const worksheet = XLSX.utils.json_to_sheet(exportData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "BookingMaster");
+
+        XLSX.writeFile(workbook, "BookingMasterData.xlsx");
+        toast.success("Booking master data exported successfully!");
+    };
+
     useEffect(() => {
         fetchData();
     }, []);
@@ -305,6 +335,27 @@ const BookingMaster = () => {
                 <div className="flex flex-col items-center pt-10 lg:pt-20 min-h-screen">
                     <div className="w-full max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-lg">
                         <div className="flex justify-end mb-6">
+                        <button
+                                onClick={handleExportBookingMaster}
+                                className="
+                                    px-6 
+                                    py-2 
+                                    bg-green-500 
+                                    text-white 
+                                    rounded 
+                                    shadow 
+                                    transform 
+                                    transition 
+                                    duration-300 
+                                    hover:bg-green-600 
+                                    hover:scale-105 
+                                    hover:shadow-lg
+                                "
+                            >
+                                Export Booking Master
+                            </button>
+                            
+                            
                             <button
                                 onClick={handleAllocationClick}
                                 className="
