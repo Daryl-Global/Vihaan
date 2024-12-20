@@ -47,9 +47,8 @@ const Login = () => {
             });
 
             const data = await res.data;
-            console.log('user data:', data);    
-            if (data.status === 200) {
 
+            if (data.status === 200) {
                 setUser({
                     id: data.id,
                     name: data.name,
@@ -58,23 +57,19 @@ const Login = () => {
                     branch: data.branch,
                 });
 
-                // TODO: implement RBAC properly with passport.js;
-                // refer: https://github.com/foyzulkarim/mernboilerplate-antd, 
-                // https://blog.probirsarkar.com/securing-your-mern-stack-application-with-multilevel-role-based-access-control-rbac-b5cc88a4a812
-
-                const userId = data.id;
                 const sessionStartTime = new Date().toISOString();
 
-                localStorage.setItem("sessionStartTime", sessionStartTime); 
+                localStorage.setItem("sessionStartTime", sessionStartTime);
                 localStorage.setItem("li", true);
                 setUserRole(data.role);
 
                 if ((data.role === "admin") || (data.role === "owner")) {
-                    navigate(`/user/${userId}/at_a_glance`);
+                    navigate(`/user/${data.id}/at_a_glance`);
+                } else {
+                    navigate(`/user/${data.id}/tickets`);
                 }
-                else { 
-                    navigate(`/user/${userId}/tickets`);
-                }
+            } else if (data.status === 403) {
+                toast.error("User is already logged in on another device.");
             } else if (data.status === 404) {
                 toast.error("Please check your name.");
             } else if (data.status === 401) {
@@ -88,10 +83,9 @@ const Login = () => {
         }
     };
 
-   
     const calculateSessionCountdown = () => {
         const sessionStartTime = localStorage.getItem("sessionStartTime");
-        const sessionDuration = 3600 * 1000; 
+        const sessionDuration = 3600 * 1000;
 
         if (sessionStartTime) {
             const startTime = new Date(sessionStartTime).getTime();
@@ -106,15 +100,13 @@ const Login = () => {
             } else {
                 const minutesLeft = Math.floor(timeLeft / 60000);
                 const secondsLeft = Math.floor((timeLeft % 60000) / 1000);
-                /*console.log(`Session expires in: ${minutesLeft}m ${secondsLeft}s`);*/
             }
         }
     };
 
-    
     useEffect(() => {
         const countdownInterval = setInterval(calculateSessionCountdown, 1000);
-        return () => clearInterval(countdownInterval); 
+        return () => clearInterval(countdownInterval);
     }, []);
 
     const keyframes = `
@@ -131,7 +123,7 @@ const Login = () => {
     const inputClasses = (field) => {
         const baseClasses = "block w-full px-5 py-3 text-base text-gray-800 placeholder-gray-500 transition duration-500 ease-in-out transform border rounded-lg bg-gray-100 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-offset-2";
         const value = obj[field];
-        let focusClasses = "focus:ring-blue-500"; 
+        let focusClasses = "focus:ring-blue-500";
 
         const validationRegex = {
             email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
