@@ -101,15 +101,21 @@ const Navbar = () => {
         }
     };
 
-    const handleLogout = () => {
-        clearUser();
-        fetch("/api/auth/logout");
-        localStorage.removeItem("role");
-        localStorage.removeItem("li");
-        localStorage.removeItem("uid");
-        localStorage.removeItem("user.name");
-        localStorage.removeItem("sessionStartTime"); // Clear session start time on logout
-        navigate("/login");
+    const handleLogout = async () => {
+        try {
+            await axios.post("/api/auth/logout", { userId: user.id });
+    
+            clearUser();
+            localStorage.removeItem("role");
+            localStorage.removeItem("li");
+            localStorage.removeItem("uid");
+            localStorage.removeItem("user.name");
+            localStorage.removeItem("sessionStartTime"); 
+    
+            navigate("/login");
+        } catch (error) {
+            console.error("Error logging out:", error);
+        }
     };
 
     useEffect(() => {
