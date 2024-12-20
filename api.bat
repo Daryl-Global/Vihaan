@@ -1,2 +1,2 @@
-cd "D:\Vihaan\Vihaan-1\api"
+cd api
 npm run dev
