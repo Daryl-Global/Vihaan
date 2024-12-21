@@ -48,7 +48,8 @@ const IssueSaleLetter = ({ setSaleLetter, ticket }) => {
       isApproved: isApproved,
       approvedDate: approvedDate,
       passingDate: null,
-      status: isApproved ? 'soldButNotDelivered' : 'allocated'
+      status: isApproved ? 'soldButNotDelivered' : 'allocated',
+      status1: "Issue"
     };
     console.log(updatedTicket);
 
