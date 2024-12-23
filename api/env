@@ -1,0 +1,3 @@
+ACCESS_TOKEN_SECRET = 'c96ff637720506ac42e5454fac70cd77a949fe16cff5f88b9e91a3fb2072268723b810d316ac592d12fe9fd4e761a92abe66f079c8a1abd5fac693e19a887063'
+REFRESH_TOKEN_SECRET = '501f753ec04056cdf339a9ef48577e08b907688fd731a91f579850ca1f8328392583cbcf41fd5fe23404e0658d2d41ec28b9de2dae18149578a6eccb1b27665c'
+MONGODB_URL = 'mongodb+srv://daryldynamic5:Lkps%409753@vohala.a2zchcl.mongodb.net/?retryWrites=true&w=majority&appName=Vohala'
