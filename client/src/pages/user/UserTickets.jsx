@@ -12,6 +12,7 @@ export const UserTickets = () => {
     const [filteredStatus, setStatusFilter] = useState("all");
     const [chassisFilter, setChassisFilter] = useState('');
     const [engineFilter, setEngineFilter] = useState('');
+    const [CustomerFilter, setCustomerFilter] = useState('');
     const [availableModels, setAvailableModels] = useState([]);
     const [availableVariants, setAvailableVariants] = useState([]);
     const [locations, setLocations] = useState([]);
@@ -153,8 +154,13 @@ export const UserTickets = () => {
         .filter((ticket) => (filteredVariant === "all" || ticket.variant === filteredVariant))
         .filter((ticket) => ticket.chassisNo.toLowerCase().includes(chassisFilter.toLowerCase()))
         .filter((ticket) => ticket.engineNo.toLowerCase().includes(engineFilter.toLowerCase()))
+        // .filter((ticket) => ticket.namCus?.toLowerCase().includes(CustomerFilter.toLowerCase()))
         .filter((ticket) => (filteredStatus === "all" || ticket.status === filteredStatus))
-        .filter((ticket) => (filteredCustomerName === "all" || ticket.nameCus === filteredCustomerName));
+        .filter((ticket) => {
+            return (ticket.nameCus || "")
+              .toLowerCase()
+              .includes(CustomerFilter.toLowerCase());
+          });
         
 
     const pascalToTitleCase = (str) => {
@@ -305,20 +311,17 @@ export const UserTickets = () => {
                                             </select>
                                         </th>
                                     )}
+
+
                                     <th className="py-2 px-4">
                                         <h3 className="text-lg font-bold">Customer Name</h3>
-                                        <select
-                                            className="w-full p-1 mt-1 text-teal-800 text-center rounded"
-                                            value={filteredCustomerName}
-                                            onChange={(e) => setFilteredCustomerName(e.target.value)}
-                                        >
-                                            <option value="all">All Customers</option>
-                                            {availableCustomerNames.map((customer) => (
-                                                <option key={customer} value={customer}>
-                                                    {customer}
-                                                </option>
-                                            ))}
-                                        </select>
+                                        <input
+                                            type="text"
+                                            placeholder="Search Customer Name"
+                                            value={CustomerFilter}
+                                            onChange={(e) => setCustomerFilter(e.target.value)}
+                                            className="max-w-[180px] p-1 pl-2 mt-1 border rounded text-teal-800 text-center"
+                                        />
                                     </th>
                                     <th className="py-2 px-4">
                                         <h3 className="text-lg font-bold">Stock Inward Date</h3>
