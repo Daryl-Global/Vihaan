@@ -12,6 +12,7 @@ const ticketSchema = new mongoose.Schema({
     location: { type: String, required: true },
     chassisNo: { type: String, required: true, unique: true },
     status: String,
+    status1: String,
     assignedDealer: String,
     nameCus: String,
     executive: String,
