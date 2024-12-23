@@ -216,11 +216,11 @@ const Login = () => {
                                         </button>
                                         <br />
                                         <span
-                                            href="#"
-                                            type="button"
-                                            className="inline-flex justify-center py-4 text-base font-medium text-gray-500 focus:outline-none hover:text-gray-600 focus:text-red-600 sm:text-sm"
+                                        //     href="#"
+                                        //     type="button"
+                                        //     className="inline-flex justify-center py-4 text-base font-medium text-gray-500 focus:outline-none hover:text-gray-600 focus:text-red-600 sm:text-sm"
                                         >
-                                            Not signed up?
+                                            {/* Not signed up?
                                             <Link
                                                 to="/register"
                                                 style={{
@@ -231,7 +231,7 @@ const Login = () => {
                                             >
                                                 Signup
                                             </Link>
-                                            here.
+                                            here. */}
                                         </span>
                                     </div>
                                 </div>

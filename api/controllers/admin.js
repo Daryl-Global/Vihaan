@@ -101,7 +101,8 @@ const exportTickets = async (req, res) => {
             DateOfPassing: ticket.passingDate,
             IssueSaleLetterDate: ticket.saleLetterDate,
             FinalStatus: ticket.finalStatus,
-            DateOfAllotment: ticket.SaleDate
+            DateOfAllotment: ticket.SaleDate,
+            Status: ticket.status
         }));
 
         const allotmentData = tickets.map(ticket => ({
@@ -119,16 +120,27 @@ const exportTickets = async (req, res) => {
             Aadhar: booking.addhar,                
             CustomerName: booking.cusName,   
             Model: booking.model,                 
-            Color: booking.color,   
+            Color: booking.colour,   
             BookingAmount: booking.bookingAmount, 
             Executive: booking.executive,
             Status: booking.status                
         }));
 
+        const issuesaleData = tickets.map(ticket => ({
+            ChassisNumber: ticket.chassisNo,
+            EngineNumber: ticket.engineNo,                
+            CustomerName: ticket.cusName,   
+            Model: ticket.model,                 
+            Color: ticket.colour,   
+            IssueAmount: ticket.issueAmount, 
+            Cash: ticket.issueFinance,         
+        }));
+
+
 
         const vehicleData = vehicles.map(vehicle => ({
             Model: vehicle.model,                 
-            Color: vehicle.color,   
+            Color: vehicle.colour,   
             variant: vehicle.variant, 
             priceLock: vehicle.priceLock,   
         }));
@@ -141,6 +153,9 @@ const exportTickets = async (req, res) => {
 
         const bookingWorksheet = XLSX.utils.json_to_sheet(bookingData);
         XLSX.utils.book_append_sheet(workbook, bookingWorksheet, "Booking");
+
+        const issueWorksheet = XLSX.utils.json_to_sheet(issuesaleData);
+        XLSX.utils.book_append_sheet(workbook, issueWorksheet, "Issue Sale");
 
         const vehicleWorksheet = XLSX.utils.json_to_sheet(vehicleData);
         XLSX.utils.book_append_sheet(workbook, vehicleWorksheet, "Vehicle");
@@ -169,14 +184,12 @@ const exportstatusTickets = async (req, res) => {
             return res.sendStatus(403);
         }
 
-        // Fetch all tickets
         const tickets = await Ticket.find().lean();
 
         if (!tickets.length) {
             return res.status(404).json({ error: "No tickets found" });
         }
 
-        // Separate tickets based on status
         const openTickets = tickets
             .filter(ticket => ticket.status === "open")
             .map(ticket => ({
@@ -184,32 +197,32 @@ const exportstatusTickets = async (req, res) => {
                 Colour: ticket.colour,
                 ChassisNo: ticket.chassisNo,
                 EngineNo: ticket.engineNo,
+                StockInwardDate: ticket.createdAt,
             }));
 
         const allocatedTickets = tickets
             .filter(ticket => ticket.status === "allocated")
             .map(ticket => ({
+                StockInwardDate: ticket.createdAt,
                 Model: ticket.model,
                 Colour: ticket.colour,
                 ChassisNo: ticket.chassisNo,
                 EngineNo: ticket.engineNo,
+                Status: ticket.status,
             }));
 
-        // Create a workbook
+        
+
         const workbook = XLSX.utils.book_new();
 
-        // Sheet 1: Open Stock
         const openSheet = XLSX.utils.json_to_sheet(openTickets);
         XLSX.utils.book_append_sheet(workbook, openSheet, "Open Stock");
 
-        // Sheet 2: Allocated
         const allocatedSheet = XLSX.utils.json_to_sheet(allocatedTickets);
         XLSX.utils.book_append_sheet(workbook, allocatedSheet, "Allocated");
 
-        // Convert to buffer
         const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "buffer" });
 
-        // Set response headers and send file
         res.setHeader("Content-Disposition", 'attachment; filename="Tickets_Status.xlsx"');
         res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
@@ -228,7 +241,6 @@ const fetchDealers = async (req, res) => {
             return res.sendStatus(403);
         }
 
-        // Fetch all users tickets from the database
         const dealers = await UserData.find({ role: "dealer" });
         res.json({ status: 200, dealers });
     } catch (error) {
@@ -242,7 +254,6 @@ const assignRole = async (req, res) => {
     if (user_id !== req.userId) {
         return res.sendStatus(403);
     }
-    // Find user who matches the email address and set to dealer
     const user = await UserData.findOneAndUpdate(
         { email: req.body.email },
         { role: "dealer" },
