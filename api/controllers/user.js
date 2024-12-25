@@ -266,40 +266,7 @@ const VehicleMaster = async (req, res) => {
     }
 };
 
-const VehicleMasterBulk = async (req, res) => {
-    try {
-        const { userId, vehicles } = req.body;
 
-        const bulkOps = vehicles.map(vehicle => ({
-            updateOne: {
-                filter: { model: vehicle.model, colour: vehicle.colour, variant: vehicle.variant },
-                update: {
-                    $setOnInsert: {
-                        id: uuidv4(),
-                        byUser: userId,
-                        model: vehicle.model,
-                        colour: vehicle.colour,
-                        variant: vehicle.variant,
-                        priceLock: vehicle.priceLock,
-                        createdOn: vehicle.createdOn || new Date(),
-                    }
-                },
-                upsert: true  // Insert the vehicle only if it doesn't already exist
-            }
-        }));
-
-        const result = await Vehicle.bulkWrite(bulkOps);
-
-        res.json({
-            status: 200,
-            message: 'Vehicles added successfully.',
-            vehiclesAdded: result.upsertedCount,
-            vehiclesNotAdded: vehicles.length - result.upsertedCount
-        });
-    } catch (error) {
-        res.status(500).json({ status: "error", message: "Failed to add vehicles.", details: error.message });
-    }
-};
 
 
 const CustomerMaster = async (req, res) => {
@@ -1069,12 +1036,126 @@ const getOpenTickets = async (req, res) => {
 
         if (!tickets || tickets.length === 0) {
             return res.status(404).json({ message: "No tickets found." });
-        }
+        }const VehicleMasterBulk = async (req, res) => {
+            try {
+                const { userId, vehicles } = req.body;
+        
+                const bulkOps = vehicles.map(vehicle => ({
+                    updateOne: {
+                        filter: { model: vehicle.model, colour: vehicle.colour, variant: vehicle.variant },
+                        update: {
+                            $setOnInsert: {
+                                id: uuidv4(),
+                                byUser: userId,
+                                model: vehicle.model,
+                                colour: vehicle.colour,
+                                variant: vehicle.variant,
+                                priceLock: vehicle.priceLock || null,
+                                createdOn: vehicle.createdOn || new Date(),
+                            }
+                        },
+                        upsert: true  // Insert the vehicle only if it doesn't already exist
+                    }
+                }));
+        
+                const result = await Vehicle.bulkWrite(bulkOps);
+        
+                res.json({
+                    status: 200,
+                    message: 'Vehicles added successfully.',
+                    vehiclesAdded: result.upsertedCount,
+                    vehiclesNotAdded: vehicles.length - result.upsertedCount
+                });
+            } catch (error) {
+                res.status(500).json({ status: "error", message: "Failed to add vehicles.", details: error.message });
+            }
+        };
 
         return res.status(200).json({ tickets });
     } catch (error) {
         console.error("Error fetching tickets:", error);
         return res.status(500).json({ error: "Failed to fetch tickets" });
+    }
+};
+
+
+
+const uploadVehicleBulk = async (req, res) => {
+    try {
+        const { userId, vehicles } = req.body;
+
+        if (!userId || !Array.isArray(vehicles) || vehicles.length === 0) {
+            return res.status(400).json({
+                status: "error",
+                message: "Invalid request. Missing userId or vehicles.",
+            });
+        }
+
+        const duplicates = [];
+        const vehiclesToInsert = [];
+        const errors = [];
+
+        for (const vehicle of vehicles) {
+            const { model, colour, variant, priceLock } = vehicle;
+
+            if (!model || !colour || !variant) {
+                errors.push({ vehicle, reason: "Missing required fields (model, colour, or variant)." });
+                continue;
+            }
+
+            try {
+                const exists = await Vehicle.findOne({ model, colour, variant });
+
+                if (exists) {
+                    duplicates.push({ model, colour, variant });
+                } else {
+                    vehiclesToInsert.push({
+                        id: uuidv4(),
+                        byUser: userId,
+                        model,
+                        colour,
+                        variant,
+                        priceLock: priceLock || null,
+                        logs: [
+                            {
+                                userRole: "admin", // Or fetch dynamically based on logged-in user
+                                message: "Vehicle added during bulk upload.",
+                            },
+                        ],
+                    });
+                }
+            } catch (dbError) {
+                console.error("Database error while checking vehicle:", dbError);
+                errors.push({ vehicle, reason: "Database error: " + dbError.message });
+            }
+        }
+
+        let insertedCount = 0;
+        if (vehiclesToInsert.length > 0) {
+            try {
+                const result = await Vehicle.insertMany(vehiclesToInsert, { ordered: false });
+                insertedCount = result.length;
+            } catch (insertError) {
+                console.error("Error during bulk insert:", insertError);
+                errors.push({ reason: "Bulk insert failed: " + insertError.message });
+            }
+        }
+
+        res.status(200).json({
+            status: 200,
+            message: "Bulk vehicle upload completed.",
+            vehiclesAdded: insertedCount,
+            duplicatesFound: duplicates.length,
+            errors,
+            duplicateDetails: duplicates,
+        });
+    } catch (error) {
+        console.error("Unhandled error during bulk vehicle upload:", error);
+        res.status(500).json({
+            status: "error",
+            message: "An unexpected error occurred.",
+            details: error.message,
+        });
     }
 };
 
@@ -1090,7 +1171,6 @@ module.exports = {
     LocationMaster,
     BookingMaster,
     VehicleMaster,
-    VehicleMasterBulk,
     updateVehicle,
     createBulkTickets,
     fetchSingleTicket,
@@ -1110,4 +1190,5 @@ module.exports = {
     updateGatePassSerialNumber,
     getBookingByAadhaar,
     getOpenTickets,
+    uploadVehicleBulk,
 };
