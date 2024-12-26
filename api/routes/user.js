@@ -31,7 +31,7 @@ const {
     updateGatePassSerialNumber,
     assignDealerToTicket,
     getBookingByAadhaar,
-    VehicleMasterBulk,
+    uploadVehicleBulk,
 } = require("../controllers/user.js");
 
 const { authenticateToken, gatePassAuthorization } = require("../middleware/authorization.js");
@@ -49,7 +49,7 @@ router.post("/:user_id/executivemaster", authenticateToken, ExecutiveMaster);
 router.post("/:user_id/locationmaster", authenticateToken, LocationMaster);
 router.post("/:user_id/bookingmaster", authenticateToken, BookingMaster);
 router.post("/:user_id/vehiclemaster", authenticateToken, VehicleMaster);
-router.post("/:user_id/vehiclemaster/bulk", authenticateToken, VehicleMasterBulk);
+router.post("/:user_id/vehicle/bulk-upload", authenticateToken, uploadVehicleBulk);
 router.patch('/:user_id/ticket/:ticket_id/update', authenticateToken, updateTicket);
 router.get('/customers', authenticateToken, getCustomers);
 router.get('/executives', authenticateToken, getExecutives);

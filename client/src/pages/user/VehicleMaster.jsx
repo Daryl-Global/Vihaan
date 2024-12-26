@@ -78,30 +78,84 @@ const VehicleMaster = () => {
     }, [vehicles]);
 
     const handleFileChange = (e) => {
-        setFile(e.target.files[0]);
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+            const validExtensions = ['xlsx', 'xls', 'csv'];
+            const fileExtension = selectedFile.name.split('.').pop().toLowerCase();
+            if (!validExtensions.includes(fileExtension)) {
+                toast.error('Invalid file type. Please upload a valid Excel or CSV file.');
+                return;
+            }
+            setFile(selectedFile);
+        }
     };
 
     const handleFileUpload = async () => {
         if (!file) {
             toast.error('Please select a file first.');
-            return null;
+            return;
         }
-
+    
         try {
             const data = await file.arrayBuffer();
-            const workbook = XLSX.read(data, { type: 'buffer' });
+            const workbook = XLSX.read(data, { type: 'array' });
             const sheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[sheetName];
-            const json = XLSX.utils.sheet_to_json(worksheet);
-            console.log(json);
-            toast.success('File successfully processed. Data logged to console.');
-            return json;
+            const jsonData = XLSX.utils.sheet_to_json(worksheet);
+    
+            const transformedData = jsonData.map(item => ({
+                model: item.Model,
+                variant: item.Variant,
+                colour: item.Colour,
+                priceLock: item.PriceLock || null,
+            }));
+    
+            console.log('Transformed Data:', transformedData);
+    
+            const response = await axios.post(`/api/user/${user.id}/vehicle/bulk-upload`, {
+                userId: user.id,
+                vehicles: transformedData,
+            }, {
+                headers: { 'Content-Type': 'application/json' },
+            });
+    
+            if (response.status === 200) {
+                const { vehiclesAdded, duplicatesFound, errors } = response.data;
+    
+                toast.success(`${vehiclesAdded} vehicles uploaded successfully.`);
+                toast.info(`${duplicatesFound} duplicates ignored.`);
+    
+                if (errors.length > 0) {
+                    console.error("Errors during upload:", errors);
+                    toast.warn("Some issues occurred. Check console for details.");
+                }
+            } else {
+                toast.error('Bulk upload failed.');
+            }
         } catch (error) {
-            toast.error('Error processing the file: ' + error.message);
-            console.error(error.message);
-            return null;
+            console.error('Error uploading file:', error.response?.data || error.message);
+            toast.error('An error occurred while uploading: ' + (error.response?.data?.message || error.message));
         }
     };
+
+
+    const handleExportTemplate = () => {
+        const templateData = [
+            { Model: '', Variant: '', Colour: '', PriceLock: '' },
+        ];
+
+        const worksheet = XLSX.utils.json_to_sheet(templateData);
+
+        const headers = ['Model', 'Variant', 'Colour', 'PriceLock'];
+        XLSX.utils.sheet_add_aoa(worksheet, [headers], { origin: "A1" });
+
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Vehicle Template');
+
+        XLSX.writeFile(workbook, 'Vehicle_Template.xlsx');
+    };
+
+    
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -121,7 +175,7 @@ const VehicleMaster = () => {
             if (!jsonData) return;
 
             try {
-                const response = await axios.post(`${baseURL}/bulkcreateticket`, jsonData, {
+                const response = await axios.post(`${baseURL}/bulkcreatevehicle`, jsonData, {
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -202,32 +256,63 @@ const VehicleMaster = () => {
         <>
             {user.permissions.includes("vehicle_master") || user.permissions.includes("all_access") ? (
             <div className="flex flex-col items-center pt-10 lg:pt-20 min-h-screen">
-                {status === "error" ? (
-                    <div className="text-red-500">
-                        You are not authorized to access this page.
+            <div className="w-full max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-lg">
+                <h2 className="text-3xl font-bold text-center mb-8">Vehicle Master</h2>
+                <div className="mb-4 flex items-center justify-between">
+    <div className="flex items-center">
+        <label htmlFor="inputType" className="mr-2">Upload Type:</label>
+        <select
+            id="inputType"
+            className="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={inputType}
+            onChange={(e) => setInputType(e.target.value)}
+        >
+            <option value="single">Single</option>
+            <option value="bulk">Bulk</option>
+        </select>
+    </div>
+
+    <div className="flex items-center justify-center">
+        <label className="inline-flex items-center">
+            <input
+                type="checkbox"
+                className="form-checkbox"
+                checked={isEditMode}
+                onChange={() => setIsEditMode(!isEditMode)}
+            />
+            <span className="ml-2">Switch to {isEditMode ? 'Create Vehicle' : 'Edit Vehicle'}</span>
+        </label>
+    </div>
+
+    <div>
+        <button
+            onClick={handleExportTemplate}
+            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+        >
+            Export Template
+        </button>
+    </div>
+</div>
+
+                {inputType === 'bulk' && (
+                    <div className="mb-6">
+                        <input
+                            type="file"
+                            accept=".xlsx, .xls, .csv"
+                            onChange={handleFileChange}
+                        />
+                        <button
+                            onClick={handleFileUpload}
+                            className="px-4 py-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        >
+                            Upload File
+                        </button>
                     </div>
-                ) : (
-                    <div className="w-full max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-lg">
-                        <h2 className="text-3xl font-bold text-center mb-8">
-                            {isEditMode ? 'Edit Vehicle Details' : 'Add Vehicle Details'}
-                        </h2>
+                )}
 
-                        <div className="flex justify-center mb-6">
-                            <label className="inline-flex items-center">
-                                <input
-                                    type="checkbox"
-                                    className="form-checkbox"
-                                    checked={isEditMode}
-                                    onChange={() => setIsEditMode(!isEditMode)}
-                                />
-                                <span className="ml-2">Switch to {isEditMode ? 'Create Vehicle' : 'Edit Vehicle'}</span>
-                            </label>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            {inputType === 'single' && (
-                                <>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {inputType === 'single' && (
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {isEditMode ? (
                                             <>
                                                 <select
@@ -314,18 +399,10 @@ const VehicleMaster = () => {
                                             autoComplete="priceLock"
                                         />
                                     </div>
-                                </>
-                            )}
+                            
+                         
 
-                            {inputType === 'bulk' && (
-                                <div>
-                                    <input
-                                        type="file"
-                                        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                                        onChange={handleFileChange}
-                                    />
-                                </div>
-                            )}
+                           
 
                             <div className="flex justify-center">
                                 <button
@@ -343,36 +420,36 @@ const VehicleMaster = () => {
                                     <option value="navigate">Display on Page</option>
                                 </select>
                             </div>
-                        </form>
+                    </form>
+                )}
 
-                            {actionType === 'navigate' && (
-                                <div className="mt-8">
-                                    <h3 className="text-2xl font-semibold mb-4">Vehicle Details</h3>
-                                    <table className="min-w-full bg-white">
-                                        <thead>
-                                            <tr>
-                                                <th className="py-2 px-4 border-b">Model</th>
-                                                <th className="py-2 px-4 border-b">Variant</th>
-                                                <th className="py-2 px-4 border-b">Colour</th>
-                                                <th className="py-2 px-4 border-b">Price Lock</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {vehicles.map((vehicle, index) => (
-                                                <tr key={index}>
-                                                    <td className="py-2 px-4 border-b">{vehicle.model}</td>
-                                                    <td className="py-2 px-4 border-b">{vehicle.variant}</td>
-                                                    <td className="py-2 px-4 border-b">{vehicle.colour}</td>
-                                                    <td className="py-2 px-4 border-b">{vehicle.priceLock}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            )}
+                {actionType === 'navigate' && (
+                    <div className="mt-8">
+                        <h3 className="text-2xl font-semibold mb-4">Vehicle Details</h3>
+                        <table className="min-w-full bg-white">
+                            <thead>
+                                <tr>
+                                    <th className="py-2 px-4 border-b">Model</th>
+                                    <th className="py-2 px-4 border-b">Variant</th>
+                                    <th className="py-2 px-4 border-b">Colour</th>
+                                    <th className="py-2 px-4 border-b">Price Lock</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {vehicles.map((vehicle, index) => (
+                                    <tr key={index}>
+                                        <td className="py-2 px-4 border-b">{vehicle.model}</td>
+                                        <td className="py-2 px-4 border-b">{vehicle.variant}</td>
+                                        <td className="py-2 px-4 border-b">{vehicle.colour}</td>
+                                        <td className="py-2 px-4 border-b">{vehicle.priceLock}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 )}
             </div>
+        </div>
             ) : (
             <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 overflow-hidden">
                 <div className="relative bg-white p-10 rounded-3xl shadow-2xl max-w-lg text-center transform transition-transform hover:scale-105 duration-500">
