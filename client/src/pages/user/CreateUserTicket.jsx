@@ -150,6 +150,23 @@ const CreateUserTicket = () => {
         }
     };
 
+
+    const handleExportTemplate = () => {
+        const templateData = [
+            { colour: '', model: '', variant: '', engineNo: '', chassisNo: '', location: '' },
+        ];
+    
+        const worksheet = XLSX.utils.json_to_sheet(templateData);
+    
+        const headers = ['colour', 'model', 'variant', 'engineNo', 'chassisNo', 'location'];
+        XLSX.utils.sheet_add_aoa(worksheet, [headers], { origin: "A1" });
+    
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Stock Template');
+    
+        XLSX.writeFile(workbook, 'Stock_Template.xlsx');
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
     
@@ -247,18 +264,29 @@ const CreateUserTicket = () => {
                     <h2 className="text-3xl font-bold text-center mb-8">
                         Add Details of Bikes.
                     </h2>
-                    <div className="mb-4">
-                        <label htmlFor="inputType">Add Details:</label>
-                        <select
-                            id="inputType"
-                            className="ml-2 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            value={inputType}
-                            onChange={(e) => setInputType(e.target.value)}
-                        >
-                            <option value="single">Single</option>
-                            <option value="bulk">Bulk</option>
-                        </select>
-                    </div>
+                    <div className="mb-4 flex items-center">
+    <div className="flex items-center w-full">
+        <label htmlFor="inputType" className="mr-2">Add Details:</label>
+        <select
+            id="inputType"
+            className="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={inputType}
+            onChange={(e) => setInputType(e.target.value)}
+        >
+            <option value="single">Single</option>
+            <option value="bulk">Bulk</option>
+        </select>
+    </div>
+
+    <div className="ml-auto">
+        <button
+            onClick={handleExportTemplate}
+            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+        >
+            Export Template
+        </button>
+    </div>
+</div>
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {inputType === 'single' && (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
