@@ -494,7 +494,7 @@ const BookingMaster = () => {
                                         >
                                             <option value="">Select HP</option>
                                             <option value="Bajaj Finance Limited">Bajaj Finance Limited</option>
-                                            <option value="Capital First Ltd">Capital First Ltd</option>
+                                            <option value="IDFC First Bank LTD">IDFC First Bank LTD</option>
                                             <option value="Family Credit Bank (L&T)">Family Credit Bank (L&T)</option>
                                             <option value="Kotak Prime Bank">Kotak Prime Bank</option>
                                             <option value="HDFC">HDFC</option>

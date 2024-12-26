@@ -1,2 +1,2 @@
-cd D:\Vihaan\Vihaan-1\client\
+cd client
 npm run dev
