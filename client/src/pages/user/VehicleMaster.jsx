@@ -258,8 +258,8 @@ const VehicleMaster = () => {
             <div className="flex flex-col items-center pt-10 lg:pt-20 min-h-screen">
             <div className="w-full max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-lg">
                 <h2 className="text-3xl font-bold text-center mb-8">Vehicle Master</h2>
-                <div className="mb-4 flex items-center">
-    <div className="flex items-center w-full">
+                <div className="mb-4 flex items-center justify-between">
+    <div className="flex items-center">
         <label htmlFor="inputType" className="mr-2">Upload Type:</label>
         <select
             id="inputType"
@@ -272,7 +272,19 @@ const VehicleMaster = () => {
         </select>
     </div>
 
-    <div className="ml-auto">
+    <div className="flex items-center justify-center">
+        <label className="inline-flex items-center">
+            <input
+                type="checkbox"
+                className="form-checkbox"
+                checked={isEditMode}
+                onChange={() => setIsEditMode(!isEditMode)}
+            />
+            <span className="ml-2">Switch to {isEditMode ? 'Create Vehicle' : 'Edit Vehicle'}</span>
+        </label>
+    </div>
+
+    <div>
         <button
             onClick={handleExportTemplate}
             className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
@@ -301,55 +313,113 @@ const VehicleMaster = () => {
                 {inputType === 'single' && (
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <input
-                                required
-                                type="text"
-                                className="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Model"
-                                value={model}
-                                onChange={(e) => setModel(e.target.value)}
-                            />
-                            <input
-                                required
-                                type="text"
-                                className="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Variant"
-                                value={variant}
-                                onChange={(e) => setVariant(e.target.value)}
-                            />
-                            <input
-                                required
-                                type="text"
-                                className="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Colour"
-                                value={colour}
-                                onChange={(e) => setColour(e.target.value)}
-                            />
-                            <input
-                                type="text"
-                                className="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Price Lock"
-                                value={priceLock}
-                                onChange={(e) => setPriceLock(e.target.value)}
-                            />
-                        </div>
-                        <div className="flex justify-center">
-                            <button
-                                type="submit"
-                                className="px-8 py-2 bg-red-600
-                                . text-white rounded hover:bg-red-600"
-                            >
-                                Submit
-                            </button>
-                            <select
-                                value={actionType}
-                                onChange={(e) => setActionType(e.target.value)}
-                                className="ml-4 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                                <option value="display">Don't Display on Page</option>
-                                <option value="navigate">Display on Page</option>
-                            </select>
-                        </div>
+                                        {isEditMode ? (
+                                            <>
+                                                <select
+                                                    required
+                                                    value={model}
+                                                    onChange={(e) => setModel(e.target.value)}
+                                                    className="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                >
+                                                    <option value="">Select a Model</option>
+                                                    {Array.from(uniqueVehicleValues.models).map((model) => (
+                                                        <option key={model} value={model}>
+                                                            {model}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                
+                                                <select
+                                                    required
+                                                    value={variant}
+                                                    onChange={(e) => setVariant(e.target.value)}
+                                                    className="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                >
+                                                    <option value="">Select a Variant</option>
+                                                    {model && Array.from(uniqueVehicleValues.variants[model] || []).map((variant) => (
+                                                        <option key={variant} value={variant}>
+                                                            {variant}
+                                                        </option>
+                                                    ))}
+                                                </select>
+
+                                                {/* Refer for UI goal: https://readymadeui.com/tailwind/component/dropdown-with-checkbox */}
+                                                <DropdownCheckboxes
+                                                    vehicles={uniqueVehicleValues}
+                                                    model={model}
+                                                    variant={variant}
+                                                    colour={colour}
+                                                    setColour={setColour}
+                                                />
+                                            </>
+                                        ) : (
+                                            <>
+                                                <input
+                                                    required
+                                                    type="text"
+                                                    className={inputClasses("model")}
+                                                    placeholder="Model"
+                                                    value={model}
+                                                    name="model"
+                                                    onChange={(e) => setModel(e.target.value)}
+                                                    autoComplete="model"
+                                                />
+                                                
+                                                <input
+                                                    required
+                                                    type="text"
+                                                    className={inputClasses("variant")}
+                                                    placeholder="Variant"
+                                                    value={variant}
+                                                    name="variant"
+                                                    onChange={(e) => setVariant(e.target.value)}
+                                                    autoComplete="variant"
+                                                />
+
+                                                <input
+                                                    required
+                                                    type="text"
+                                                    className={inputClasses("colour")}
+                                                    placeholder="Colour"
+                                                    value={colour}
+                                                    name="colour"
+                                                    onChange={(e) => setColour(e.target.value)}
+                                                    autoComplete="colour"
+                                                />
+                                            </>
+                                        )}
+                                        <input
+                                            
+                                            type="text"
+                                            className="px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="Price Lock"
+                                            value={priceLock}
+                                            name="priceLock"
+                                            onChange={(e) => setPriceLock(e.target.value)}
+                                            autoComplete="priceLock"
+                                        />
+                                    </div>
+                            
+                         
+
+                           
+
+                            <div className="flex justify-center">
+                                <button
+                                    type="submit"
+                                    className="px-8 py-2 bg-vihaan-honda-red text-white rounded hover:bg-vihaan-honda-red-darker w-40"
+                                >
+                                    Submit
+                                </button>
+                                <select
+                                    value={actionType}
+                                    onChange={(e) => setActionType(e.target.value)}
+                                    className="ml-4 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                >
+                                    <option value="display">Don't Display on Page</option>
+                                    <option value="navigate">Display on Page</option>
+                                </select>
+                            </div>
                     </form>
                 )}
 
